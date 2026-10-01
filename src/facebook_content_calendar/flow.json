@@ -1,0 +1,295 @@
+{
+  "name": "FacebookContentCalendar",
+  "state": {
+    "type": "json_schema",
+    "json_schema": {
+      "type": "object",
+      "required": [
+        "brand_identity",
+        "brand_pillars",
+        "target_audience",
+        "core_goals",
+        "target_period"
+      ],
+      "properties": {
+        "brand_kit": {
+          "type": "string",
+          "description": "Brand Kit details: HEX color palette, primary/secondary fonts, logo placement rules, standard layout templates (set by the user or derived from brand_identity)"
+        },
+        "qc_report": {
+          "type": "string",
+          "description": "The quality control report for all posts — spelling/grammar issues, policy risks, brand consistency scores, and PASS/FAIL/PENDING status per post (set by the flow)"
+        },
+        "core_goals": {
+          "type": "string",
+          "description": "Primary marketing goals: Engagement, Traffic, Leads, or Brand Awareness"
+        },
+        "website_url": {
+          "type": "string",
+          "description": "The brand's primary website URL to include in 'Click the link' CTAs (e.g. https://techgenius.com)"
+        },
+        "brand_pillars": {
+          "type": "string",
+          "description": "Core brand pillars (e.g. Education, Community, Product, Brand Story)"
+        },
+        "posting_ratio": {
+          "type": "string",
+          "description": "Derived balanced weekly posting ratio across pillars (set by the flow)"
+        },
+        "target_period": {
+          "type": "string",
+          "description": "The month or date range for the content calendar (e.g. 'October 2026' or '2026-10-01 to 2026-10-31')"
+        },
+        "visual_assets": {
+          "type": "string",
+          "description": "The full visual design output for all calendar posts — image format, layout template ID, dynamic text layers, and AI image generator prompts per post (set by the flow)"
+        },
+        "brand_identity": {
+          "type": "string",
+          "description": "Brand name, personality, tone of voice, and visual identity guidelines (including HEX colors, fonts, logo placement, and brand kit details)"
+        },
+        "content_drafts": {
+          "type": "string",
+          "description": "The full copywriting output for all calendar posts — includes short copy, long copy, hooks, CTAs, hashtags, and visual briefs per post (set by the flow)"
+        },
+        "target_audience": {
+          "type": "string",
+          "description": "Audience personas, demographics, pain points, and motivations"
+        },
+        "compliance_rules": {
+          "type": "string",
+          "description": "Brand compliance rules: exact phone numbers, website URLs, list of forbidden/sensitive keywords, marketing claim boundaries (e.g. no '100% guaranteed', no unverified medical claims)"
+        },
+        "content_calendar": {
+          "type": "string",
+          "description": "The final validated content calendar as a JSON string (set by the flow)"
+        },
+        "performance_report": {
+          "type": "string",
+          "description": "The post-publish analytics report: top-performing posts, pillar performance rankings, optimal posting times, and strategic recommendations for the next planning cycle (set by the flow)"
+        }
+      }
+    }
+  },
+  "schema": "crewai.flow/v1",
+  "methods": {
+    "write_copy": {
+      "do": {
+        "call": "agent",
+        "with": {
+          "goal": "Transform every post in the finalized content calendar into two high-converting copy variations, three compelling headline hooks, a customized CTA, 5-7 targeted hashtags, a detailed production visual brief, and a clear PUBLISH FORMAT decision — all matched to the brand voice and audience.",
+          "role": "Senior Facebook Copywriter",
+          "input": "You are given the finalized Facebook content calendar below. For EVERY post in the array, produce the full copy package described below.\n\nBrand Identity: ${state.brand_identity}\nBrand Pillars: ${state.brand_pillars}\nTarget Audience: ${state.target_audience}\nCore Goals: ${state.core_goals}\nWebsite URL: ${state.website_url}\n\nFinalized Calendar:\n${outputs.review_and_finalize.raw}\n\nFor EACH post, output the following structure exactly:\n\n---\nPOST ID: [post_id]\nDATE: [date] | TIME: [time]\nPILLAR: [pillar]\nSTATUS: Draft\nPUBLISH FORMAT: [Short or Long — assigned according to the PUBLISH FORMAT RULE in your instructions. Never assign Long to two posts in a row.]\n\n### HOOK OPTIONS\n1. [Hook 1 — curiosity or bold statement]\n2. [Hook 2 — pain-point led]\n3. [Hook 3 — value promise]\n\n### SHORT VERSION (< 150 words)\n[Punchy, mobile-optimized copy with emojis and line breaks. Never generic or robotic. Ends with the CTA. If cta_type is 'Click the link', end with the actual URL from the Website URL field above.]\n\n### LONG VERSION (300-500 words)\n[Storytelling or value-driven copy that deeply addresses the audience's pain points. Uses emojis and line breaks for readability. Ends with the CTA including the real URL if applicable.]\n\n### CTA\n[Customized call to action matching the post goal and cta_type. If cta_type is 'Click the link', include the actual website URL here. If no website URL was provided, use 'Comment below' instead.]\n\n### HASHTAGS\n[5-7 hashtags: a mix of branded, category, and trending — relevant to the post topic and brand. Maximum 7 total.]\n\n### PRODUCTION VISUAL BRIEF\n[Highly detailed description for the AI Designer: color palette, layout, text overlay placement, asset placement, mood, and any motion or format notes — based on the post's visual_brief_concept]\n---\n\nProcess every single post. Do not skip any. Update the status of every post to 'Draft'. If the calendar is missing or empty, output: NO DATA: calendar generation returned nothing\n\nExpected output: A complete copy package for every post in the calendar, each containing: POST ID, DATE, TIME, PILLAR, STATUS (Draft), PUBLISH FORMAT (Short or Long — with no two consecutive Long posts, and approximately 2 in every 5 posts assigned Long), 3 Hook Options, Short Version (< 150 words), Long Version (300-500 words), CTA (with real URL for 'Click the link' posts), Hashtags (5-7), and Production Visual Brief. Every 'Click the link' CTA must include the actual website URL. If no website URL: use 'Comment below' instead. If no calendar data: NO DATA: calendar generation returned nothing",
+          "verbose": true,
+          "backstory": "You are a senior copywriter who specializes in Facebook marketing for tech brands. You write copy that speaks directly to founders and startup operators: punchy, human, never robotic, and always rooted in the specific pain points of the audience. You use emojis and line breaks deliberately to improve mobile readability. You work strictly from the inputs provided and never invent brand claims, statistics, or product features not in the brief. IMPORTANT: For every post with cta_type 'Click the link', you MUST include the website URL provided in the Website URL field as the actual link in the CTA line — for example: 'Visit us at https://techgenius.com'. Never write 'Click the link' without appending the real URL. If no website URL is provided, change the CTA to 'Comment below' instead.\n\nPUBLISH FORMAT RULE: Across the full calendar, assign PUBLISH FORMAT as follows to create a natural mix — approximately 2 out of every 5 posts should be Long, the rest Short. Never assign Long to two consecutive posts. Use this pattern as a guide: Short, Short, Long, Short, Long — then repeat. Apply it across the full list of posts in order.\n\nIf the calendar input is missing or empty, output: NO DATA: calendar generation returned nothing — and never substitute invented or example content.",
+          "inject_date": true,
+          "llm": "openai/gpt-5.6-luna"
+        }
+      },
+      "start": false,
+      "listen": "review_and_finalize",
+      "router": false,
+      "description": "For each post in the finalized content calendar, generates two copy variations (short and long), three headline hooks, a customized CTA with the real website URL for any 'Click the link' posts, 5-7 hashtags, a detailed production visual brief, and a PUBLISH FORMAT field indicating whether the post should be published as Short or Long version."
+    },
+    "design_visuals": {
+      "do": {
+        "call": "agent",
+        "with": {
+          "apps": [
+            "facebook@a774255f-4910-4e5c-8abc-c29aba4735e7"
+          ],
+          "goal": "Translate every post's Production Visual Brief into a precise, publication-ready visual design specification — correct image format, layout template, dynamic text layer, and a detailed AI image generator prompt — fully aligned to the brand kit.",
+          "role": "AI Art Director",
+          "input": "You are given the full copy package for every Facebook post below. For EACH post, produce the visual design specification described below.\n\nBrand Kit:\n${state.brand_identity}\n\n${state.brand_kit}\n\nFull Copy Package (all posts):\n${outputs.write_copy.raw}\n\nFor EACH post, output the following structure exactly:\n\n---\nPOST ID: [post_id]\nDATE: [date] | TIME: [time]\n\n### IMAGE FORMAT\n[Square 1:1 / Vertical 4:5 / Landscape 16:9 — chosen based on the post goal and content type]\n\n### LAYOUT TEMPLATE ID\n[A descriptive template code, e.g. TMPL-EDU-01 for an educational post, TMPL-PROMO-02 for a promotional post — derived from pillar and format]\n\n### DYNAMIC TEXT LAYER\n[The exact short text to overlay on the image — taken directly from the PRODUCTION VISUAL BRIEF's text overlay note in the copy package. Must be concise and high-contrast-readable.]\n\n### AI IMAGE GENERATOR PROMPT\n[A highly detailed English prompt for Midjourney or DALL-E. Must include: subject, setting, lighting, color palette (use brand HEX colors where relevant), mood, style (e.g. photorealistic, flat illustration, 3D render), camera angle, and aspect ratio flag (e.g. --ar 1:1). Example style: 'A modern minimalist startup workspace with a laptop and coffee, soft natural side lighting, brand color accents in #1A73E8 and #FBBC04, photorealistic, 8k resolution, top-down flat lay shot --ar 1:1']\n---\n\nProcess every single post. Do not skip any. If the copy package is missing or empty, output: NO DATA: copy generation returned nothing\n\nExpected output: A complete visual design specification for every post in the calendar, each containing: POST ID, DATE & TIME, Image Format (1:1/4:5/16:9), Layout Template ID, Dynamic Text Layer (exact overlay text), and AI Image Generator Prompt (detailed Midjourney/DALL-E English prompt with brand colors, mood, style, and aspect ratio). Never invent brand details not present in the brand kit. If no copy data: NO DATA: copy generation returned nothing",
+          "tools": [
+            "crewai_tools:DallETool"
+          ],
+          "memory": true,
+          "verbose": true,
+          "backstory": "You are a senior Art Director who has spent years turning copywriter briefs into pixel-perfect creative specs for Facebook campaigns. You know Facebook's image format standards cold (1:1 for square, 4:5 for vertical, 16:9 for landscape) and you write Midjourney/DALL-E prompts that production teams can use immediately without guessing. You work exclusively from the copy package provided to you — you never invent brand colors, fonts, or visual concepts that are not stated in the brief or brand kit. If the input is missing or empty, output: NO DATA: copy generation returned nothing",
+          "inject_date": true,
+          "llm": "openai/gpt-5.6-luna"
+        }
+      },
+      "start": false,
+      "listen": "write_copy",
+      "router": false,
+      "description": "Translates every post's Production Visual Brief from the copywriter into a detailed image generation prompt (for Midjourney/DALL-E), specifies image format (1:1, 4:5, or 16:9), layout template ID, and dynamic text layer — all aligned to the brand kit. Acts as an AI Art Director."
+    },
+    "quality_control": {
+      "do": {
+        "call": "agent",
+        "with": {
+          "goal": "Protect the brand from factual errors, compliance violations, and Facebook policy breaches by auditing every post's copy and visual spec against a strict checklist, and returning a detailed per-post QC report with PASS / FAIL / PENDING HUMAN APPROVAL status.",
+          "role": "Content Quality & Compliance Controller",
+          "input": "You are given the full copy package and visual design specifications for every Facebook post. Audit each post strictly against the checklist below.\n\nBrand Identity & Compliance Rules:\n${state.brand_identity}\n\nCompliance Rules (phone numbers, URLs, forbidden keywords, claim boundaries):\n${state.compliance_rules}\n\nWebsite URL (approved destination for 'Click the link' CTAs):\n${state.website_url}\n\n--- FULL COPY PACKAGE ---\n${outputs.write_copy.raw}\n\n--- FULL VISUAL DESIGN SPECS ---\n${outputs.design_visuals.raw}\n\nFor EACH post, run through this exact checklist and output the result:\n\n---\nPOST ID: [post_id]\nDATE: [date] | TIME: [time]\n\n### CHECKLIST RESULTS\n1. Spelling & Grammar: [PASS / FAIL \\ u2014 list issues if any]\n2. Factual Accuracy (phone, URL, hotline): [PASS / FAIL \\ u2014 list discrepancies if any]\n3. Copy-Image Consistency (dynamic text layer matches caption context): [PASS / FAIL]\n4. Dangerous Marketing Claims (e.g. '100% guaranteed', 'best on the market', unverified medical/legal claims): [PASS / FAIL \\ u2014 list flagged phrases and safe alternatives]\n5. Facebook Policy Compliance (violence, discrimination, unverified health claims): [PASS / FAIL \\ u2014 list issues if any]\n6. CTA URL Check: [PASS if 'Click the link' CTA contains a real URL / PASS if CTA does not use 'Click the link' / FAIL if 'Click the link' appears with no URL]\n\n### OVERALL STATUS\n[PASS / FAIL / PENDING HUMAN APPROVAL]\n(Automatically set to PENDING HUMAN APPROVAL if the post is in healthcare, dental, legal, or finance sectors OR contains strong guarantee language)\n\n### SUGGESTED EDITS\n[Specific, safe replacement text for any flagged issues \\ u2014 or 'None required' if PASS]\n---\n\nProcess every post. Do not skip any. If the input is missing or empty, output: NO DATA: copy or visual data returned nothing\n\nExpected output: A detailed per-post QC report covering all 6 checklist items, with an overall status (PASS / FAIL / PENDING HUMAN APPROVAL) and specific suggested edits for every flagged issue. A 'Click the link' CTA is PASS when it contains a real URL. PENDING HUMAN APPROVAL must be set for any post in healthcare, dental, legal, or finance, or containing strong guarantee claims. Never invent issues or corrections not derivable from the provided inputs. If no input data: NO DATA: copy or visual data returned nothing",
+          "verbose": true,
+          "backstory": "You are a meticulous QC and legal compliance officer with deep expertise in Facebook advertising policy, Vietnamese language standards, and brand safety. You check every single post entry against the provided compliance rules and brand guidelines. You never invent corrections or suggest content you cannot derive from the provided inputs. You flag every issue clearly with the exact post ID, the problem found, and a safe suggested replacement where possible. IMPORTANT URL RULE: A 'Click the link' CTA is VALID and must PASS if it includes a real URL (e.g. https://techgenius.com). Only flag 'Click the link' as a QC failure if no actual URL appears anywhere in the copy for that post. If the input is missing or empty, output: NO DATA: copy or visual data returned nothing",
+          "inject_date": true,
+          "llm": "openai/gpt-5.6-luna"
+        }
+      },
+      "start": false,
+      "listen": "design_visuals",
+      "router": false,
+      "description": "Audits every post's copy and visual spec against a strict checklist: spelling and grammar, factual accuracy (phone numbers, URLs), copy-image consistency, dangerous marketing claims, and Facebook policy compliance. A 'Click the link' CTA is valid only if it contains a real URL. Returns PASS / FAIL / PENDING HUMAN APPROVAL per post."
+    },
+    "publish_and_analyze": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "publish_posts",
+              "agent": "publisher",
+              "description": "Review the QC report, the finalized content calendar, and the copy package below. For every post with status PASS or PENDING HUMAN APPROVAL in the QC report:\n\n1. Call facebook/list_managed_pages to retrieve the Page ID for your connected Facebook Page.\n2. Call facebook/get_scheduled_posts to check whether a post for this post_id is already scheduled (to avoid duplicates).\n3. For each eligible post not already scheduled, determine the correct copy version:\n   - If the copy package shows PUBLISH FORMAT: Short for this post \\ u2014 use the SHORT VERSION copy as the message.\n   - If the copy package shows PUBLISH FORMAT: Long for this post \\ u2014 use the LONG VERSION copy as the message.\n4. Call facebook/create_post with:\n   - page_id: the Page ID retrieved in step 1\n   - message: the copy version selected in step 3\n   - scheduled_publish_time: the Unix timestamp derived from the post's exact date and time in the calendar\n   - published: false\n5. Report the outcome for every post.\n\nQC Report:\n{qc_report}\n\nFinalized Content Calendar:\n{content_calendar}\n\nCopy Package (includes PUBLISH FORMAT per post):\n{copy_package}\n\nFor each post, output:\n---\nPOST ID: [post_id]\nDATE: [date] | TIME: [time]\nPUBLISH FORMAT USED: [Short or Long]\nACTION: [Scheduled on Facebook / Already scheduled \\ u2014 skipped / BLOCKED \\ u2014 QC FAILED]\nFACEBOOK POST ID: [returned post id, or N/A]\nREASON (if blocked or skipped): [QC failure reason or duplicate note]\n---\n\nIf any required input is missing or empty, output: NO DATA: QC or calendar data returned nothing",
+              "expected_output": "A structured publishing report for every post: POST ID, DATE & TIME, PUBLISH FORMAT USED (Short or Long), ACTION (Scheduled on Facebook / Already scheduled / BLOCKED), FACEBOOK POST ID (or N/A), and REASON where applicable. The correct copy version (Short or Long) must be used for each post as specified by PUBLISH FORMAT in the copy package. Never invent copy, dates, times, or IDs. If inputs are missing: NO DATA: QC or calendar data returned nothing"
+            },
+            {
+              "name": "analyze_performance",
+              "agent": "analyst",
+              "description": "Using the publishing report from the previous task and any available post-campaign performance metrics below, produce the strategic analytics report for the next content planning cycle.\n\nPublishing Report: (from previous task)\n\nPerformance Metrics (Reach, Engagement, Clicks, Leads, Shares per post \\ u2014 if available):\n{performance_data}\n\nProduce the following report:\n\n### TOP 3 PERFORMING POSTS\n[Post ID \\ u2014 Why it succeeded: pillar, format, topic angle, posting time]\n(If no metrics available yet: state posts are newly scheduled and analytics will be ready after 7 days)\n\n### PILLAR PERFORMANCE RANKING\n[Rank each pillar by average engagement \\ u2014 highest to lowest]\n(If no metrics: list pillars from the calendar with a note that ranking will be available post-publish)\n\n### PILLARS TO SCALE UP\n[Pillar name \\ u2014 rationale based on data]\n\n### PILLARS TO RETHINK\n[Pillar name \\ u2014 rationale and suggested approach change]\n\n### OPTIMAL POSTING WINDOWS (ACTUAL DATA)\n[Day and time slots with highest observed engagement spikes]\n(If no metrics: note this will be populated after 7 days of live data)\n\n### RECOMMENDATIONS FOR NEXT CYCLE\n[3-5 concrete, specific content strategy recommendations for the AI Content Planner's next run]",
+              "expected_output": "A structured performance and strategy report with: Top 3 performing posts (or a 7-day pending note), pillar performance ranking, pillars to scale/rethink, optimal posting windows, and 3-5 strategic recommendations for the next planning cycle. Never invent metrics or engagement figures."
+            }
+          ],
+          "agents": {
+            "analyst": {
+              "goal": "Analyse the published post performance data and produce a strategic report for the next content planning cycle.",
+              "role": "Social Media Data Analyst",
+              "verbose": true,
+              "backstory": "You are a data-driven Social Media Analyst who translates engagement metrics into actionable content strategy. You identify which content pillars, formats, and posting times are driving results, and which need to be deprioritised or rethought. You work strictly from the metrics data provided \\ u2014 you never invent numbers, reach figures, or engagement rates not present in your input. If no performance data is available yet (posts are newly scheduled), you output a structured placeholder report noting that analytics will be available after 7 days of the posts going live, and you do not invent projected figures.",
+              "inject_date": true,
+              "llm": "openai/gpt-5.6-luna"
+            },
+            "publisher": {
+              "apps": [
+                "facebook/list_managed_pages@private",
+                "facebook/get_scheduled_posts@private",
+                "facebook/create_post@private"
+              ],
+              "goal": "Publish every approved post directly to the Facebook Page using the Graph API, with the correct scheduled time, the correct copy version (Short or Long as specified by PUBLISH FORMAT), and the correct image prompt attached as the link_data story attachment where supported.",
+              "role": "Social Media Publishing Manager",
+              "verbose": true,
+              "backstory": "You are a precise Social Media Manager who handles the technical handoff between content approval and live publishing on Facebook. You use the Facebook API to list managed pages, check for duplicate scheduled posts, and create each approved post as a scheduled entry.\n\nCOPY VERSION RULE: Every post in the copy package has a PUBLISH FORMAT field set to either 'Short' or 'Long'. For posts marked PUBLISH FORMAT: Short, use the SHORT VERSION copy as the message. For posts marked PUBLISH FORMAT: Long, use the LONG VERSION copy as the message. Never use Short copy for a Long post or vice versa. Never invent or shorten copy.\n\nSCHEDULING: Use the exact date and time from the finalized content calendar for each post's scheduled_publish_time. Convert the date and time (YYYY-MM-DD HH:MM) to a Unix timestamp. Do not modify any post's time \\ u2014 the calendar planner already added a 30-minute buffer.\n\nYou never publish posts marked FAIL in the QC report \\ u2014 those are flagged as BLOCKED. You never invent copy, dates, times, or page IDs not present in your inputs. If any required input is missing or empty, output: NO DATA: QC or calendar data returned nothing",
+              "inject_date": true,
+              "llm": "openai/gpt-5.6-luna"
+            }
+          },
+          "inputs": {
+            "qc_report": "${outputs.quality_control.raw}",
+            "copy_package": "${outputs.write_copy.raw}",
+            "content_calendar": "${outputs.review_and_finalize.raw}",
+            "performance_data": "${state.performance_report}"
+          },
+          "verbose": true
+        }
+      },
+      "start": false,
+      "listen": "quality_control",
+      "router": false,
+      "description": "Publishes all QC-approved posts directly to the Facebook Page using the Graph API (scheduled), using the Short or Long version copy as specified by PUBLISH FORMAT per post, then generates a post-campaign analytics report with pillar rankings, top posts, optimal windows, and recommendations for the next planning cycle."
+    },
+    "review_and_finalize": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "audit",
+              "agent": "reviewer",
+              "description": "Review the Facebook content calendar below against the brand guidelines.\n\nBrand Identity: {brand_identity}\nBrand Pillars: {brand_pillars}\nTarget Audience: {target_audience}\nCore Goals: {core_goals}\nPosting Ratio & Calendar:\n{calendar_output}\n\nFor each post entry, check:\n1. Brand voice consistency \\ u2014 does the topic match the brand tone and identity?\n2. Pillar balance \\ u2014 does the overall distribution respect the approved posting ratio?\n3. Completeness \\ u2014 are all required fields present (post_id, date, time, pillar, topic, target_audience, goal, cta_type, visual_brief_concept, status)?\n4. Status field \\ u2014 is every entry's status set to 'Idea'?\n\nList all flagged issues clearly. If no issues are found, state 'All entries passed review.'\nIf the calendar input contains NO DATA, output: NO DATA: calendar generation returned nothing",
+              "expected_output": "A detailed review report listing any flagged issues per post entry (e.g. missing field, wrong pillar, off-brand tone) and overall pillar balance assessment. If all entries are valid: 'All entries passed review.' If no calendar data: NO DATA: calendar generation returned nothing"
+            },
+            {
+              "name": "finalize",
+              "agent": "finalizer",
+              "description": "Using the audit report and the original calendar, produce the final corrected content calendar.\n\nOriginal Calendar:\n{calendar_output}\n\nAudit Report: (from previous task)\n\nInstructions:\n- Apply all corrections flagged in the audit report.\n- Ensure every post object contains all required fields: post_id, date, time, pillar, topic, target_audience, goal, cta_type, visual_brief_concept, status.\n- Every status must be exactly \"Idea\".\n- Output ONLY the final valid JSON array. No markdown, no explanation, no extra text.\n\nIf the audit returned NO DATA, output exactly: NO DATA: calendar generation returned nothing",
+              "expected_output": "A single valid JSON array of all corrected post objects, each containing: post_id (string), date (YYYY-MM-DD), time (HH:MM), pillar (string), topic (string), target_audience (string), goal (string), cta_type (string), visual_brief_concept (string), status ('Idea'). Output only the JSON array. If no data: NO DATA: calendar generation returned nothing"
+            }
+          ],
+          "agents": {
+            "reviewer": {
+              "goal": "Audit the generated Facebook content calendar for brand voice consistency, pillar balance, and completeness of all required fields.",
+              "role": "Brand Content Quality Reviewer",
+              "verbose": true,
+              "backstory": "You are a meticulous brand content reviewer with deep expertise in Facebook content strategy. You check every post entry against the brand guidelines and content pillars, flag issues, and ensure every field is correctly populated. You work strictly from the provided calendar and brand inputs \\ u2014 you never invent new post ideas or data not present in the inputs.",
+              "inject_date": true,
+              "llm": "openai/gpt-5.6-luna"
+            },
+            "finalizer": {
+              "goal": "Produce the final, corrected, publication-ready content calendar as a clean JSON array matching the required output schema exactly.",
+              "role": "Content Calendar Publisher",
+              "verbose": true,
+              "backstory": "You are a precise content operations specialist who takes a reviewed calendar with flagged issues and produces the definitive, corrected version. You ensure the JSON structure is perfectly valid, all required fields are present and correctly typed, and every status value is 'Idea'. You output only the final JSON array \\ u2014 nothing else. You work strictly from the reviewed inputs and never invent data.",
+              "inject_date": true,
+              "llm": "openai/gpt-5.6-luna"
+            }
+          },
+          "inputs": {
+            "core_goals": "${state.core_goals}",
+            "brand_pillars": "${state.brand_pillars}",
+            "brand_identity": "${state.brand_identity}",
+            "calendar_output": "${outputs.analyze_and_generate.raw}",
+            "target_audience": "${state.target_audience}"
+          },
+          "verbose": true
+        }
+      },
+      "start": false,
+      "listen": "analyze_and_generate",
+      "router": false,
+      "description": "Reviews all calendar entries for brand voice consistency, pillar balance, and completeness. Corrects any gaps and outputs the final validated content calendar JSON."
+    },
+    "analyze_and_generate": {
+      "do": {
+        "call": "crew",
+        "with": {
+          "tasks": [
+            {
+              "name": "build_ratio",
+              "agent": "strategist",
+              "description": "Review the following brand inputs and define a balanced weekly content posting ratio across the brand pillars for Facebook.\n\nBrand Identity: {brand_identity}\nBrand Pillars: {brand_pillars}\nTarget Audience: {target_audience}\nCore Goals: {core_goals}\nTarget Period: {target_period}\n\nDeliverables:\n1. A percentage-based posting ratio across all pillars (e.g. 40% Value, 30% Engagement, 20% Product/Sales, 10% Brand Story).\n2. A brief rationale for each pillar's weight based on the stated core goals.\n3. A recommended posting frequency per week (e.g. 5 posts/week).\n\nBase your output strictly on the provided inputs. If a required input is missing or empty, output: NO DATA: brand inputs returned nothing",
+              "expected_output": "A clear posting ratio breakdown with pillar names, percentages, rationale, and recommended weekly posting frequency — derived strictly from the provided brand inputs. If inputs are missing: NO DATA: brand inputs returned nothing"
+            },
+            {
+              "name": "generate_calendar",
+              "agent": "planner",
+              "description": "Using the approved posting ratio and brand inputs below, generate a complete Facebook content calendar for the target period.\n\nBrand Identity: {brand_identity}\nBrand Pillars: {brand_pillars}\nTarget Audience: {target_audience}\nCore Goals: {core_goals}\nTarget Period: {target_period}\nCurrent Date and Time: (use your injected current date — schedule post_001 at least 30 minutes after this time)\n\nRules:\n- Generate one JSON array of post objects covering the full target period.\n- Distribute posts according to the posting ratio from the previous task.\n- SCHEDULING RULE: The first post (post_001) must have a time that is at least 30 minutes after the current time. For example, if it is currently 10:15, post_001 must be scheduled no earlier than 10:45. All other posts follow their optimal posting times.\n- Each post object must include ALL of these fields:\n  - post_id: a unique string (e.g. \"post_001\")\n  - date: \"YYYY-MM-DD\" format, within the target period\n  - time: \"HH:MM\" format (24h), set to an optimal Facebook posting time (post_001 must be at least 30 min from now)\n  - pillar: the content pillar name\n  - topic: a detailed, specific topic description matching the brand voice\n  - target_audience: the specific audience segment this post targets\n  - goal: the single primary goal of this post\n  - cta_type: the call-to-action type (e.g. \"Comment below\", \"Click the link\", \"Share this post\")\n  - visual_brief_concept: a detailed description of the image or video concept for the content writer\n  - status: always set to \"Idea\"\n- Maintain the brand voice described in the brand identity throughout all topics.\n- Output ONLY the JSON array — no extra explanation or markdown.\n\nIf the posting ratio task returned no data, output: NO DATA: brand inputs returned nothing",
+              "expected_output": "A valid JSON array of post objects, each containing all required fields (post_id, date, time, pillar, topic, target_audience, goal, cta_type, visual_brief_concept, status). Every status value must be \"Idea\". post_001 must be scheduled at least 30 minutes after the current time. If inputs were missing: NO DATA: brand inputs returned nothing"
+            }
+          ],
+          "agents": {
+            "planner": {
+              "goal": "Generate a complete, date-specific Facebook content calendar for the target period based on the approved posting ratio.",
+              "role": "Facebook Content Calendar Planner",
+              "verbose": true,
+              "backstory": "You are an expert content planner who builds detailed, publication-ready Facebook content calendars. You assign each post a date, optimal posting time, content pillar, topic, target audience segment, goal, CTA type, and visual brief concept. You follow the approved posting ratio precisely and output results strictly as valid JSON. You never invent brand details, audience data, or goals beyond what is provided in your input. IMPORTANT SCHEDULING RULE: The very first post in the calendar must be scheduled at least 30 minutes after the current time shown in your system date. For example, if the current time is 10:15, the earliest you may schedule post_001 is 10:45. All subsequent posts follow their optimal posting times within the target period. This ensures Facebook never rejects a post for being scheduled too close to the current time.",
+              "inject_date": true,
+              "llm": "openai/gpt-5.6-luna"
+            },
+            "strategist": {
+              "goal": "Analyze brand pillars and define a balanced weekly content posting ratio for Facebook.",
+              "role": "Social Media Content Strategist",
+              "verbose": true,
+              "backstory": "You are a seasoned social media strategist who specializes in Facebook content planning. You understand how to translate brand pillars into an actionable posting framework that balances value, engagement, product promotion, and brand storytelling. You work strictly from the brand information provided and never invent details that were not given.",
+              "inject_date": true,
+              "llm": "openai/gpt-5.6-luna"
+            }
+          },
+          "inputs": {
+            "core_goals": "${state.core_goals}",
+            "brand_pillars": "${state.brand_pillars}",
+            "target_period": "${state.target_period}",
+            "brand_identity": "${state.brand_identity}",
+            "target_audience": "${state.target_audience}"
+          },
+          "verbose": true
+        }
+      },
+      "start": true,
+      "router": false,
+      "description": "Analyzes brand pillars to build a balanced posting ratio, then generates the full content calendar as structured JSON. The first post is always scheduled at least 30 minutes after the current time to avoid Facebook API rejections."
+    }
+  },
+  "description": "A full 5-agent Facebook content operations pipeline: plans a structured content calendar, writes two-variation copy with hooks and CTAs, designs visual specs and AI image prompts, runs quality and compliance checks (PASS/FAIL/PENDING), then packages approved posts for Facebook Graph API publishing and generates a post-campaign analytics report for the next planning cycle."
+}

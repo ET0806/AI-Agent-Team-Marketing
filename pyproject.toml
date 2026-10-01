@@ -1,0 +1,24 @@
+[project]
+name = "facebook_content_calendar"
+version = "0.1.0"
+description = "facebook_content_calendar using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[file-processing,litellm,tools]>=1.15.22,<2.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/facebook_content_calendar"]
+
+[tool.crewai]
+type = "flow"
+definition = "src/facebook_content_calendar/flow.json"
+project_id = "8cab8936-32c6-44da-ae3c-716bf2c5d2fe"
+
+[tool.uv]
+override-dependencies = ["litellm<=1.82.6"]
