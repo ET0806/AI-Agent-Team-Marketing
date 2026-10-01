@@ -50,3 +50,4 @@ Khi nhấn **Run**, hệ thống sẽ yêu cầu cung cấp đầy đủ các th
 **Tính năng chèn hình ảnh:** Tính năng tự động thêm hình ảnh minh họa vào bài viết đang trong quá trình kiểm thử (Testing) để tối ưu hiển thị. Vì vậy, tính năng này tạm thời được vô hiệu hóa và chưa tích hợp vào bản build hiện tại.
 
 **Facebook link:** https://www.facebook.com/profile.php?id=61595098675486
+**YouTube link:** https://youtu.be/V0swCNLnjFw
